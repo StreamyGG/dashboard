@@ -1,12 +1,35 @@
-import { Component } from 'solid-js';
+import { AuthProvider } from "./providers/AuthProvider";
+import { Router, Route } from "@solidjs/router";
+import { Login } from "./components/auth/Login";
+import { Register } from "./components/auth/Register";
+import { ProtectedRoute } from "./components/auth/ProtectedRoute";
+import { Dashboard } from "./components/dashboard/Main";
+import { ParentProps } from "solid-js";
+import { ThemeProvider } from "./providers/ThemeProvider";
 
-const App: Component = () => {
+function MountApp(props: ParentProps) {
+  return (
+    <AuthProvider>
+      <ThemeProvider>{props.children}</ThemeProvider>
+    </AuthProvider>
+  );
+}
 
-return (
-  <div>
-    dashboard
-  </div>
-);
+const App = () => {
+  return (
+    <Router root={MountApp}>
+      <Route path="/login" component={Login} />
+      <Route path="/register" component={Register} />
+      <Route
+        path="/"
+        component={() => (
+          <ProtectedRoute>
+            <Dashboard />
+          </ProtectedRoute>
+        )}
+      />
+    </Router>
+  );
 };
 
 export default App;
